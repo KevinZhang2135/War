@@ -1,79 +1,124 @@
+import java.util.NoSuchElementException;
+
 /**
  * Interface for lists.
  */
 public interface List<E> {
-    
+
+    /**
+     * Returns the first element in this list
+     * 
+     * @return the first element in this list
+     * @throws NoSuchElementException if list is empty
+     */
+    public Node<E> getFirst();
+
+    /**
+     * Returns the element with the specified position in this list
+     * 
+     * @param index the position of the element
+     * @return the element at the specified position in this list
+     * @throws IndexOutOfBoundsException if index is invalid
+     */
+    public Node<E> get(int index);
+
+    /**
+     * Replaces the object at the specified position
+     * 
+     * @param index   the position to replace
+     * @param element the element to be stored
+     * @return the previous value of the element at index
+     * @throws IndexOutOfBoundsException if index is invalid
+     */
+    public E set(int index, E element);
+
+    /**
+     * Inserts new node to front
+     * 
+     * @param element the element to be added to the list
+     * @return true
+     */
+    public boolean addFirst(E element);
+
     /**
      * Adds the object x to the end of the list.
-     * @param x the element to be added to this list
+     * 
+     * @param element the element to be added to the list
      * @return true
      */
     public boolean add(E element);
-    
+
     /**
      * Adds the object x at the specified position
-     * @param index the position to add the element
+     * 
+     * @param index   the position to add the element
      * @param element the element to be added to the list
-     * @return true if the operation succeeded, false otherwise
-     * @throws IllegalArgumentException if index is invalid
+     * @return true
+     * @throws IndexOutOfBoundsException if index is invalid
      */
     public boolean add(int index, E element);
-    
+
     /**
-     * Returns the number of elements in this list
-     * @return the number of elements in this list
+     * Removes first object from the list
+     * 
+     * @return the object that was removed
+     * @throws NoSuchElementException if list is empty
      */
-    public int size();
-    
+    public E removeFirst();
+
     /**
-     * Returns the element with the specified position in this list
-     * @param index the position of the element
-     * @return the element at the specified position in this list
-     * @throws IllegalArgumentException if index is invalid
+     * Removes last object from the list
+     * 
+     * @return the object that was removed
+     * @throws NoSuchElementException if list is empty
      */
-    public E get(int index);
-    
-    /**
-     * Replaces the object at the specified position
-     * @param index the position to replace
-     * @param element the element to be stored
-     * @return the previous value of the element at index
-     * @throws IllegalArgumentException if index is invalid
-     */
-    public E set(int index, E element);
-    
+    public E removeLast();
+
     /**
      * Removes the object at the specified position
+     * 
      * @param index the position to remove
      * @return the object that was removed
-     * @throws IllegalArgumentException if index is invalid
+     * @throws IndexOutOfBoundsException if index is invalid
      */
     public E remove(int index);
-    
+
     /**
-     * Tests if this list has no elements.
-     * @return  <tt>true</tt> if this list has no elements;
-     *          <tt>false</tt> otherwise.
+     * Returns the index of the specified data
+     *
+     * @param element the element to look for
+     * @return the index of the data in the list, or -1 if it is not contained
+     *         within the list
      */
-    public boolean isEmpty();
-    
+    public int indexOf(E element);
+
     /**
      * Returns <tt>true</tt> if this list contains the specified element.
      *
-     * @param element element whose presence in this List is to be tested.
-     * @return  <code>true</code> if the specified element is present;
-     *  <code>false</code> otherwise.
+     * @param element element whose presence in this list is to be tested.
+     * @return <code>true</code> if the specified element is present;
+     *         <code>false</code> otherwise.
      */
     public boolean contains(E element);
-    
-    
-    /** 
-     * Returns the index of the specified element
-     *
-     * @param element the element we're looking for
-     * @return the index of the element in the list, or -1 if it is not contained within the list
+
+    /**
+     * Tests if this list has no elements.
+     * 
+     * @return <tt>true</tt> if this list has no elements; <tt>false</tt>
+     *         otherwise.
      */
-    public int indexOf(E element);
-     
-    
+    public boolean isEmpty();
+
+    /**
+     * Returns the number of elements in this list
+     * 
+     * @return the number of elements in this list
+     */
+    public int size();
+
+    /**
+     * Clears all elements from list
+     */
+    public void clear();
+
 }

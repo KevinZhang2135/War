@@ -1,7 +1,7 @@
 import java.util.NoSuchElementException;
 
-public class LinkedList<E> {
-	public Node<E> header, tail;
+public class LinkedList<E> implements List<E> {
+	private Node<E> header, tail;
 	private int length;
 
 	public LinkedList() {
@@ -14,10 +14,10 @@ public class LinkedList<E> {
 	 * Returns the first element in this list
 	 * 
 	 * @return the first element in this list
-	 * @throws IllegalArgumentException if list is empty
+	 * @throws NoSuchElementException if list is empty
 	 */
 	public Node<E> getFirst() {
-		if (this.header.next == null) {
+		if (this.length == 0) {
 			throw new NoSuchElementException();
 		}
 
@@ -29,11 +29,11 @@ public class LinkedList<E> {
 	 * 
 	 * @param index the position of the element
 	 * @return the element at the specified position in this list
-	 * @throws IllegalArgumentException if index is invalid
+	 * @throws IndexOutOfBoundsException if index is invalid
 	 */
 	public Node<E> get(int index) {
 		if (index < 0 || index >= this.length) {
-			throw new IllegalArgumentException();
+			throw new IndexOutOfBoundsException();
 		}
 
 		// segments search time in half
@@ -60,20 +60,31 @@ public class LinkedList<E> {
 	/**
 	 * Replaces the object at the specified position
 	 * 
-	 * @param index the position to replace
-	 * @param card  the element to be stored
+	 * @param index   the position to replace
+	 * @param element the element to be stored
 	 * @return the previous value of the element at index
-	 * @throws IllegalArgumentException if index is invalid
+	 * @throws IndexOutOfBoundsException if index is invalid
 	 */
-	public E set(int index, E data) {
-		return null;
+	public E set(int index, E element) {
+		if (index < 0 || index >= this.length) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		Node<E> traverser = this.get(index);
+		Node<E> replacedNode = traverser;
+		traverser.data = element;
+
+		return replacedNode.data;
 	}
 
-	/*
+	/**
 	 * Inserts new node to front
+	 * 
+	 * @param element the element to be added to the list
+	 * @return true
 	 */
-	public boolean addFirst(E data) {
-		Node<E> newNode = new Node<>(data, null, this.header.next);
+	public boolean addFirst(E element) {
+		Node<E> newNode = new Node<>(element, null, this.header.next);
 		if (this.length == 0) {
 			this.tail.prev = newNode;
 
@@ -90,11 +101,11 @@ public class LinkedList<E> {
 	/**
 	 * Adds the object x to the end of the list.
 	 * 
-	 * @param x the element to be added to this list
+	 * @param element the element to be added to the list
 	 * @return true
 	 */
-	public boolean add(E data) {
-		Node<E> newNode = new Node<>(data, this.tail.prev, null);
+	public boolean add(E element) {
+		Node<E> newNode = new Node<>(element, this.tail.prev, null);
 		if (this.length == 0) {
 			this.header.next = newNode;
 
@@ -111,28 +122,29 @@ public class LinkedList<E> {
 	/**
 	 * Adds the object x at the specified position
 	 * 
-	 * @param index the position to add the element
-	 * @param x     the element to be added to the list
-	 * @return true if the operation succeeded, false otherwise
-	 * @throws IllegalArgumentException if index is invalid
+	 * @param index   the position to add the element
+	 * @param element the element to be added to the list
+	 * @return true
+	 * @throws IndexOutOfBoundsException if index is invalid
 	 */
-	public boolean add(int index, E data) {
+	public boolean add(int index, E element) {
 		if (index < 0 || index > this.length) {
-			throw new IllegalArgumentException();
+			throw new IndexOutOfBoundsException();
 		}
 
 		if (index == 0) {
-			return this.addFirst(data);
+			return this.addFirst(element);
 
 		}
 
 		if (index == this.length) {
-			return this.add(data);
+			return this.add(element);
 		}
 
 		// segments search time in half
 		Node<E> traverser = this.get(index);
-		Node<E> newNode = new Node<>(data, traverser.prev, traverser);
+		Node<E> newNode = new Node<>(element, traverser.prev,
+				traverser);
 
 		traverser.prev.next = newNode;
 		traverser.prev = newNode;
@@ -142,25 +154,116 @@ public class LinkedList<E> {
 	}
 
 	/**
+	 * Removes first object from the list
+	 * 
+	 * @return the object that was removed
+	 * @throws NoSuchElementException if list is empty
+	 */
+	public E removeFirst() {
+		if (this.length == 0) {
+			throw new NoSuchElementException();
+		}
+
+		Node<E> removedNode = this.header.next;
+		this.header.next = removedNode.next;
+
+		if (removedNode.next != null) {
+			removedNode.next.prev = null;
+
+		} else {
+			this.tail.prev = null;
+		}
+
+		this.length--;
+		return removedNode.data;
+	}
+
+	/**
+	 * Removes last object from the list
+	 * 
+	 * @return the object that was removed
+	 * @throws NoSuchElementException if list is empty
+	 */
+	public E removeLast() {
+		if (this.length == 0) {
+			throw new NoSuchElementException();
+		}
+
+		Node<E> removedNode = this.tail.prev;
+		this.tail.prev = removedNode.prev;
+
+		if (removedNode.prev != null) {
+			removedNode.prev.next = null;
+
+		} else {
+			this.header.next = null;
+		}
+
+		this.length--;
+		return removedNode.data;
+	}
+
+	/**
+	 * Removes the object at the specified position
+	 * 
+	 * @param index the position to remove
+	 * @return the object that was removed
+	 * @throws IndexOutOfBoundsException if index is invalid
+	 */
+	public E remove(int index) {
+		if (index < 0 || index >= this.length) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		if (index == 0) {
+			return this.removeFirst();
+		}
+
+		if (index == this.length - 1) {
+			return this.removeLast();
+		}
+
+		Node<E> removedNode = this.get(index);
+		removedNode.prev.next = removedNode.next;
+		removedNode.next.prev = removedNode.prev;
+
+		this.length--;
+		return removedNode.data;
+	}
+
+	/**
 	 * Returns the index of the specified data
 	 *
-	 * @param data the element to look for
+	 * @param element the element to look for
 	 * @return the index of the data in the list, or -1 if it is not contained
 	 *         within the list
 	 */
-	public int indexOf(E data) {
+	public int indexOf(E element) {
+		Node<E> traverser = this.header.next;
+		int index = 0;
+
+		while (traverser != null) {
+			if (traverser.data == element
+					|| traverser.data.equals(element)) {
+				return index;
+			}
+
+			traverser = traverser.next;
+			index++;
+		}
+
 		return -1;
 	}
 
 	/**
 	 * Returns <tt>true</tt> if this list contains the specified element.
 	 *
-	 * @param element element whose presence in this List is to be tested.
+	 * @param element element whose presence in this list is to be tested.
 	 * @return <code>true</code> if the specified element is present;
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean contains(E element) {
-		return true;
+		return this.indexOf(element) != -1;
 	}
 
 	/**
@@ -192,6 +295,7 @@ public class LinkedList<E> {
 		this.length = 0;
 	}
 
+	@Override
 	public String toString() {
 		String message = "[";
 		Node<E> traverser = this.header;
