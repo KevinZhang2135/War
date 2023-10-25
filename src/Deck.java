@@ -1,5 +1,4 @@
 import java.lang.Math;
-import java.util.Arrays;
 
 public class Deck {
 	private LinkedList<Card> cards;
@@ -34,6 +33,7 @@ public class Deck {
 		for (int suite: suites) {
 			for (int rank: ranks) {
 				Card card = new Card(rank, suite);
+				this.cards.add(card);
 			}
 		}
 	}
@@ -63,8 +63,9 @@ public class Deck {
 		return this.cards.size();
 	}
 
-
-
-
+	@Override
+	public String toString() {
+		return this.cards.toString();
+	}
 
 }
