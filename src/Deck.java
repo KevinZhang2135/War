@@ -6,6 +6,7 @@ public class Deck {
 	public Deck() {
 		this.cards = new LinkedList<>();
 	}
+
 	/**
 	 * @param card the card added to the bottom of the deck
 	 */
@@ -17,21 +18,21 @@ public class Deck {
 	 * @return the card at the top of the deck
 	 */
 	public Card draw() {
-		return this.cards.removeFirst();
+		return this.cards.isEmpty() ? null : this.cards.removeFirst();
 	}
 
 	/**
 	 * replaces all current cards in deck to create a standard 52-card deck
 	 */
 	public void fill() {
-		int[] suites = {0, 1, 2, 3};
+		int[] suites = { 0, 1, 2, 3 };
 		int[] ranks = new int[13];
 		for (int i = 0; i < ranks.length; i++) {
 			ranks[i] = i + 2;
 		}
 
-		for (int suite: suites) {
-			for (int rank: ranks) {
+		for (int suite : suites) {
+			for (int rank : ranks) {
 				Card card = new Card(rank, suite);
 				this.cards.add(card);
 			}
@@ -51,7 +52,7 @@ public class Deck {
 	public void shuffle() {
 		for (int i = 0; i < this.cards.size(); i++) {
 			int index = (int) (Math.random() * this.cards.size());
-			
+
 			Card card = this.cards.remove(index);
 			this.cards.add(card);
 		}

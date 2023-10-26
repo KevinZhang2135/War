@@ -1,18 +1,13 @@
-## Getting Started
+* What is the point of the interface List? What does it mean for a Java class
+* (e.g., LinkedList) to implement an interface?
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+An interface allows to specify requirements for a class. For the List interface,
+it specified the methods needed to be implemented and their required parameters
+and return types. When a class implements an interface, it has to satisfy all
+the requirements list in the interface.
 
-## Folder Structure
 
-The workspace contains two folders by default, where:
+* Describe any serious problems you encountered.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+Due to the nature of War, there was a chance of a infinite recursion error after
+declaring "war," so the code had to check if each deck has less than 4 cards.
