@@ -1,13 +1,28 @@
+import java.util.Scanner;
+
 class WarGame {
+	public static Scanner sc = new Scanner(System.in);
 
 	public static void main(String[] args) {
-		Deck deck = new Deck();
-		deck.fill();
-		deck.shuffle();
+		// creates player deck
+		Deck playerDeck = new Deck();
+		playerDeck.fill();
+		playerDeck.shuffle();
 		
-		System.out.println(deck.size());
-		while (!deck.isEmpty()) {
-			System.out.println(deck.draw());
+		// divides player deck in half for the computer deck
+		int deckSize = playerDeck.size();
+		Deck computerDeck = new Deck();
+		for (int i = 0; i < deckSize / 2; i++) {
+			computerDeck.add(playerDeck.draw());
+		}
+
+		// main game loop
+		boolean runtime = true;
+		System.out.println("War");
+		while (runtime) {
+			System.out.println("Player deck size: " + playerDeck.size());
+			System.out.println("Computer deck size: " + computerDeck.size() + "\n");
+			sc.nextLine();
 		}
 	}
 }

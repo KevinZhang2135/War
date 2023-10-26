@@ -51,6 +51,7 @@ public class Deck {
 	public void shuffle() {
 		for (int i = 0; i < this.cards.size(); i++) {
 			int index = (int) (Math.random() * this.cards.size());
+			
 			Card card = this.cards.remove(index);
 			this.cards.add(card);
 		}

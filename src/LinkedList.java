@@ -45,7 +45,6 @@ public class LinkedList<E> implements List<E> {
 			}
 
 			return traverser.next;
-
 		}
 
 		// traverses to index from tail
@@ -134,7 +133,6 @@ public class LinkedList<E> implements List<E> {
 
 		if (index == 0) {
 			return this.addFirst(element);
-
 		}
 
 		if (index == this.length) {
