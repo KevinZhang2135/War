@@ -1,4 +1,7 @@
-public class Card {
+import java.util.ArrayList;
+import java.awt.Dimension;
+
+public class Card extends Sprite {
     private int rank;
     private int suit;
 
@@ -23,19 +26,25 @@ public class Card {
      * Constructor rank can be 2, 3, ..., 10, JACK, QUEEN, KING, ACE suit can be
      * CLUBS, DIAMONDS, HEARTS, SPADES
      */
-    public Card(int rank, int suit) {
-        if (rank < 2 || rank > ACE) {
-            throw new IllegalArgumentException(
-                    "invalid rank: " + rank);
-        }
+    public Card(int[] coords, Dimension size, ArrayList<Sprite> sprites) {
+        super(coords, size, sprites);
 
+    }
+
+    public void setProperties(int suit, int rank) {
         if (suit < 0 || suit > 3) {
             throw new IllegalArgumentException(
                     "invalid suit: " + suit);
         }
 
-        this.rank = rank;
+        if (rank < 2 || rank > ACE) {
+            throw new IllegalArgumentException(
+                    "invalid rank: " + rank);
+        }
+
         this.suit = suit;
+        this.rank = rank;
+
     }
 
     /**

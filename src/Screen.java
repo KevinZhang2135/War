@@ -33,13 +33,13 @@ public class Screen extends JPanel implements Runnable {
         this.imageHandler = new ImageHandler("sprites");
         this.sprites = new ArrayList<Sprite>();
 
-        this.background = new Sprite(
-                new int[] { 0, 0 },
-                new Dimension(SCREEN_HEIGHT * 2, SCREEN_HEIGHT),
-                this.sprites);
+        // this.background = new Sprite(
+        //         new int[] { 0, 0 },
+        //         new Dimension(SCREEN_HEIGHT * 2, SCREEN_HEIGHT),
+        //         this.sprites);
 
-        this.background.spriteLayer = -1;
-        this.background.images.add(this.imageHandler.getImage("background.png"));
+        // this.background.spriteLayer = -1;
+        // this.background.images.add(this.imageHandler.getImage("background.png"));
 
     }
 

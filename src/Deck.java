@@ -2,8 +2,13 @@ import java.lang.Math;
 
 public class Deck {
 	private LinkedList<Card> cards;
+	public int x, y;
+	
 
-	public Deck() {
+	public Deck(int[] coords) {
+		this.x = coords[0];
+        this.y = coords[1];
+		
 		this.cards = new LinkedList<>();
 	}
 
@@ -31,12 +36,12 @@ public class Deck {
 			ranks[i] = i + 2;
 		}
 
-		for (int suite : suites) {
-			for (int rank : ranks) {
-				Card card = new Card(rank, suite);
-				this.cards.add(card);
-			}
-		}
+		// for (int suite : suites) {
+		// 	for (int rank : ranks) {
+		// 		Card card = new Card(rank, suite);
+		// 		this.cards.add(card);
+		// 	}
+		// }
 	}
 
 	/**
