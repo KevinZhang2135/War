@@ -7,7 +7,7 @@ public class App {
 
     public static void run() {
         // creating instance of JFrame
-        JFrame window = new JFrame("Platformer");
+        JFrame window = new JFrame("War");
 
         // closing the window will close app
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

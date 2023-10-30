@@ -5,7 +5,7 @@ public class Card extends Sprite {
     private int rank;
     private int suit;
 
-    private static String[] suits = { "clubs", "diamonds", "hearts",
+    public static final String[] SUITS = { "clubs", "diamonds", "hearts",
             "spades" };
 
     public static final int CLUBS = 0;
@@ -13,7 +13,7 @@ public class Card extends Sprite {
     public static final int HEARTS = 2;
     public static final int SPADES = 3;
 
-    private static String[] ranks = { null, null, "2", "3", "4", "5",
+    public static final String[] RANKS = { null, null, "2", "3", "4", "5",
             "6", "7", "8", "9", "10", "jack", "queen", "king",
             "ace" };
 
@@ -44,7 +44,6 @@ public class Card extends Sprite {
 
         this.suit = suit;
         this.rank = rank;
-
     }
 
     /**
@@ -65,7 +64,7 @@ public class Card extends Sprite {
      * Returns a string representation of the card
      */
     public String toString() {
-        return ranks[rank] + " of " + suits[suit];
+        return RANKS[rank] + " of " + SUITS[suit];
     }
 
     /**

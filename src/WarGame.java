@@ -6,10 +6,6 @@ class WarGame {
 
 	public static void main(String[] args) {
 		// creates decks
-		playerDeck = new Deck(new int[] {0, 0});
-		computerDeck = new Deck(new int[] {0, 0});
-		contestedCards = new Deck(new int[] {0, 0});
-		setupDecks();
 
 		// main game loop
 		boolean runtime = true;

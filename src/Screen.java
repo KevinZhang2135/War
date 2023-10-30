@@ -19,7 +19,6 @@ public class Screen extends JPanel implements Runnable {
     private ImageHandler imageHandler;
 
     private ArrayList<Sprite> sprites;
-    private Sprite background;
 
     public Screen() {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -33,13 +32,39 @@ public class Screen extends JPanel implements Runnable {
         this.imageHandler = new ImageHandler("sprites");
         this.sprites = new ArrayList<Sprite>();
 
-        // this.background = new Sprite(
-        //         new int[] { 0, 0 },
-        //         new Dimension(SCREEN_HEIGHT * 2, SCREEN_HEIGHT),
-        //         this.sprites);
+        String[] suits = { "clubs", "diamonds", "spades", "hearts" };
+        LinkedList<String> ranks = new LinkedList<>();
 
-        // this.background.spriteLayer = -1;
-        // this.background.images.add(this.imageHandler.getImage("background.png"));
+        for (int i = 2; i <= 10; i++) {
+            ranks.add(i + "");
+        }
+
+        ranks.add(new String[] { "ace", "jack", "king", "queen" });
+
+        for (int i = 0; i < suits.length; i++) {
+            for (int j = 0; j < ranks.size(); j++) {
+                String filename = suits[i] + "_" + ranks.get(j).data + ".png";
+                System.out.println(filename);
+                int[] coords = new int[2];
+                coords[0] = j * TILE_SIZE * 3 / 4;
+                coords[1] = i * TILE_SIZE;
+
+                Sprite sprite = new Sprite(
+                        coords,
+                        new Dimension(this.TILE_SIZE * 3 / 4, this.TILE_SIZE),
+                        this.sprites);
+
+                sprite.images.add(this.imageHandler.getImage(filename));
+
+            }
+        }
+
+        Sprite sprite = new Sprite(
+                new int[] { 0, this.TILE_SIZE * 4 },
+                new Dimension(this.TILE_SIZE * 3 / 4, this.TILE_SIZE),
+                this.sprites);
+
+        sprite.images.add(this.imageHandler.getImage("card_back.png"));
 
     }
 
@@ -54,7 +79,6 @@ public class Screen extends JPanel implements Runnable {
         double offsetx = 0;
         double offsety = 0;
 
-        this.background.draw(this.background.x, this.background.y, g2);
         Collections.sort(this.sprites, (Sprite s1, Sprite s2) -> s1.spriteLayer - s2.spriteLayer);
         for (Sprite sprite : this.sprites) {
             int offsetPosx = (int) (sprite.x - offsetx);

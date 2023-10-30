@@ -98,7 +98,7 @@ public class LinkedList<E> implements List<E> {
 	}
 
 	/**
-	 * Adds the object x to the end of the list.
+	 * Adds the object element to the end of the list.
 	 * 
 	 * @param element the element to be added to the list
 	 * @return true
@@ -119,7 +119,21 @@ public class LinkedList<E> implements List<E> {
 	}
 
 	/**
-	 * Adds the object x at the specified position
+	 * Adds all elements to the end of the list.
+	 * 
+	 * @param elements the elements to be added to the list
+	 * @return true
+	 */
+	public boolean add(E[] elements) {
+		for (E element: elements) {
+			this.add(element);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Adds the object element at the specified position
 	 * 
 	 * @param index   the position to add the element
 	 * @param element the element to be added to the list

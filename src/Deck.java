@@ -1,15 +1,25 @@
 import java.lang.Math;
+import java.util.ArrayList;
+import java.awt.Dimension;
 
 public class Deck {
 	private LinkedList<Card> cards;
-	public int x, y;
-	
 
-	public Deck(int[] coords) {
-		this.x = coords[0];
-        this.y = coords[1];
-		
+	public int x, y;
+	private final int TILE_SIZE;
+
+	private ImageHandler imageHandler;
+	private ArrayList<Sprite> sprites;
+
+	public Deck(int[] coords, int tileSize, ImageHandler imageHandler, ArrayList<Sprite> sprites) {
 		this.cards = new LinkedList<>();
+
+		this.x = coords[0];
+		this.y = coords[1];
+		this.TILE_SIZE = tileSize;
+
+		this.imageHandler = imageHandler;
+		this.sprites = sprites;
 	}
 
 	/**
@@ -30,18 +40,23 @@ public class Deck {
 	 * replaces all current cards in deck to create a standard 52-card deck
 	 */
 	public void fill() {
-		int[] suites = { 0, 1, 2, 3 };
-		int[] ranks = new int[13];
-		for (int i = 0; i < ranks.length; i++) {
-			ranks[i] = i + 2;
-		}
+		for (String suit : Card.SUITS) {
+			for (String rank : Card.RANKS) {
+				if (rank == null) {
+					continue;
+				}
 
-		// for (int suite : suites) {
-		// 	for (int rank : ranks) {
-		// 		Card card = new Card(rank, suite);
-		// 		this.cards.add(card);
-		// 	}
-		// }
+				String filename = String.format("%s_%s.png", suit, rank);
+				Card card = new Card(
+						new int[] { 0, 0 },
+						new Dimension(this.TILE_SIZE * 3 / 4, this.TILE_SIZE),
+						this.sprites);
+
+				card.images.add(this.imageHandler.getImage(filename));
+				card.images.add(this.imageHandler.getImage("card_back.png"));
+				this.cards.add(card);
+			}
+		}
 	}
 
 	/**
