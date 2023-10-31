@@ -5,13 +5,12 @@ import java.awt.Dimension;
 public class Deck {
 	private LinkedList<Card> cards;
 
-	public int x, y;
+	private int x, y;
 	private final int TILE_SIZE;
 
 	private ImageHandler imageHandler;
-	private ArrayList<Sprite> sprites;
 
-	public Deck(int[] coords, int tileSize, ImageHandler imageHandler, ArrayList<Sprite> sprites) {
+	public Deck(int[] coords, int tileSize, ImageHandler imageHandler) {
 		this.cards = new LinkedList<>();
 
 		this.x = coords[0];
@@ -19,7 +18,31 @@ public class Deck {
 		this.TILE_SIZE = tileSize;
 
 		this.imageHandler = imageHandler;
-		this.sprites = sprites;
+	}
+
+	/**
+	 * Sets the coordinates of the deck
+	 * 
+	 * @param x the new x coordinate of the deck
+	 * @param y the new y coordinate of the deck
+	 */
+	public void setCoords(int x, int y) {
+		this.x = x;
+		this.y = y;
+
+		for (int i = 0; i < this.cards.size(); i++) {
+			Card card = (Card) this.cards.get(i).data;
+			card.setCoords(x, y);
+		}
+	}
+
+	/**
+	 * Retrieves the card at the index in deck
+	 * @param index the index of the card in deck
+	 * @return the card in deck
+	 */
+	public Card get(int index) {
+		return this.cards.get(index).data;
 	}
 
 	/**
@@ -40,20 +63,20 @@ public class Deck {
 	 * replaces all current cards in deck to create a standard 52-card deck
 	 */
 	public void fill() {
-		for (String suit : Card.SUITS) {
-			for (String rank : Card.RANKS) {
-				if (rank == null) {
-					continue;
-				}
-
-				String filename = String.format("%s_%s.png", suit, rank);
+		for (int suit = 0; suit < Card.SUITS.length; suit++) {
+			for (int rank = 2; rank < Card.RANKS.length; rank++) {
+				String filename = String.format("%s_%s.png", Card.SUITS[suit], Card.RANKS[rank]);
 				Card card = new Card(
-						new int[] { 0, 0 },
-						new Dimension(this.TILE_SIZE * 3 / 4, this.TILE_SIZE),
-						this.sprites);
+						new int[] { this.x, this.y },
+						new Dimension(this.TILE_SIZE * 3 / 4, this.TILE_SIZE));
 
+				card.setRank(rank);
+				card.setSuit(suit);
+
+				// retrieves images for card according to suit and rank
 				card.images.add(this.imageHandler.getImage(filename));
 				card.images.add(this.imageHandler.getImage("card_back.png"));
+
 				this.cards.add(card);
 			}
 		}
@@ -83,6 +106,19 @@ public class Deck {
 	 */
 	public int size() {
 		return this.cards.size();
+	}
+
+	/**
+	 * @return a deep copy of the deck
+	 */
+	public Deck copy() {
+		Deck copy = new Deck(
+				new int[] { this.x, this.y },
+				TILE_SIZE,
+				imageHandler);
+
+		copy.cards = this.cards.copy();
+		return copy;
 	}
 
 	@Override

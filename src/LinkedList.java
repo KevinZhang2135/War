@@ -1,6 +1,6 @@
 import java.util.NoSuchElementException;
 
-public class LinkedList<E> implements List<E> {
+public class LinkedList<E> {
 	private Node<E> header, tail;
 	private int length;
 
@@ -295,6 +295,21 @@ public class LinkedList<E> implements List<E> {
 	 */
 	public int size() {
 		return this.length;
+	}
+
+	/**
+	 * @return a deep copy of the list
+	 */
+	public LinkedList<E> copy() {
+		LinkedList<E> newLinkedList = new LinkedList<>();
+		Node<E> traverser = this.header;
+
+		while (traverser.next != null) {
+			traverser = traverser.next;
+			newLinkedList.add(traverser.data);
+		}
+
+		return newLinkedList;
 	}
 
 	/**

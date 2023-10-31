@@ -26,24 +26,27 @@ public class Card extends Sprite {
      * Constructor rank can be 2, 3, ..., 10, JACK, QUEEN, KING, ACE suit can be
      * CLUBS, DIAMONDS, HEARTS, SPADES
      */
-    public Card(int[] coords, Dimension size, ArrayList<Sprite> sprites) {
-        super(coords, size, sprites);
+    public Card(int[] coords, Dimension size) {
+        super(coords, size);
 
     }
 
-    public void setProperties(int suit, int rank) {
-        if (suit < 0 || suit > 3) {
-            throw new IllegalArgumentException(
-                    "invalid suit: " + suit);
-        }
-
+    public void setRank(int rank) {
         if (rank < 2 || rank > ACE) {
             throw new IllegalArgumentException(
                     "invalid rank: " + rank);
         }
 
-        this.suit = suit;
         this.rank = rank;
+    }
+
+    public void setSuit(int suit) {
+        if (suit < 0 || suit > 3) {
+            throw new IllegalArgumentException(
+                    "invalid suit: " + suit);
+        }
+
+        this.suit = suit;
     }
 
     /**
