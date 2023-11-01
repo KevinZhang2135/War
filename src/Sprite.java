@@ -27,9 +27,9 @@ public class Sprite {
         this.x = x;
         this.y = y;
     }
-    
+
     public void draw(int x, int y, Graphics2D g2) {
-        BufferedImage image = this.images.get(0);
+        BufferedImage image = this.images.get(this.frame);
         g2.drawImage(
                 image,
                 x,

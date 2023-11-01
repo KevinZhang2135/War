@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.awt.Dimension;
 
 public class Card extends Sprite {

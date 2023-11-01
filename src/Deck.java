@@ -1,9 +1,9 @@
 import java.lang.Math;
-import java.util.ArrayList;
 import java.awt.Dimension;
 
 public class Deck {
-	private LinkedList<Card> cards;
+	public LinkedList<Card> cards;
+	public LinkedList<Card> discardPile;
 
 	private int x, y;
 	private final int TILE_SIZE;
@@ -12,12 +12,22 @@ public class Deck {
 
 	public Deck(int[] coords, int tileSize, ImageHandler imageHandler) {
 		this.cards = new LinkedList<>();
+		this.discardPile = new LinkedList<>();
 
 		this.x = coords[0];
 		this.y = coords[1];
 		this.TILE_SIZE = tileSize;
 
 		this.imageHandler = imageHandler;
+	}
+
+	/**
+	 * Retrieves the topleft coordinate of the deck
+	 * 
+	 * @return a coordinate pair as (x, y)
+	 */
+	public int[] getCoords() {
+		return new int[] { this.x, this.y };
 	}
 
 	/**
@@ -29,34 +39,51 @@ public class Deck {
 	public void setCoords(int x, int y) {
 		this.x = x;
 		this.y = y;
-
-		for (int i = 0; i < this.cards.size(); i++) {
-			Card card = (Card) this.cards.get(i).data;
-			card.setCoords(x, y);
-		}
 	}
 
 	/**
-	 * Retrieves the card at the index in deck
-	 * @param index the index of the card in deck
-	 * @return the card in deck
+	 * Retrieves the first card from the discard pile
+	 * @return the first card of the discard pile
 	 */
-	public Card get(int index) {
-		return this.cards.get(index).data;
+	public Card getTopDiscard() {
+		return this.discardPile.getFirst().data;
 	}
 
 	/**
-	 * @param card the card added to the bottom of the deck
-	 */
-	public void add(Card card) {
-		this.cards.add(card);
-	}
-
-	/**
-	 * @return the card at the top of the deck
+	 * Draws a card from the deck and places it into a discard pile
+	 * 
+	 * @return the card discarded by the deck
 	 */
 	public Card draw() {
-		return this.cards.isEmpty() ? null : this.cards.removeFirst();
+		if (this.cards.isEmpty()) {
+			return null;
+		}
+
+		Card drawnCard = this.cards.removeFirst();
+		drawnCard.frame = 1; // reveals card
+
+		this.discardPile.addFirst(drawnCard);
+		return drawnCard;
+	}
+
+	/**
+	 * Adds all cards to end of deck
+	 * Adds all cards in discard pile back into the deck
+	 * 
+	 * @param cards cards to be added to end of deck
+	 */
+	public void winCards(LinkedList<Card> wonCards) {
+		while (!this.discardPile.isEmpty()) {
+			Card wonCard = this.discardPile.removeLast();
+			wonCard.frame = 0; // unflips card
+			this.cards.add(wonCard);
+		}
+
+		while (!wonCards.isEmpty()) {
+			Card wonCard = wonCards.removeLast();
+			wonCard.frame = 0; // unflips card
+			this.cards.add(wonCard);
+		}
 	}
 
 	/**
@@ -66,16 +93,23 @@ public class Deck {
 		for (int suit = 0; suit < Card.SUITS.length; suit++) {
 			for (int rank = 2; rank < Card.RANKS.length; rank++) {
 				String filename = String.format("%s_%s.png", Card.SUITS[suit], Card.RANKS[rank]);
+
+				// randomizes card coordinates in both x and y directions by -10 to 10 pixels
+				int[] cardCoords = {
+						(int) (Math.random() * (20 + 1)) - 10,
+						(int) (Math.random() * (20 + 1)) - 10
+				};
+
 				Card card = new Card(
-						new int[] { this.x, this.y },
+						cardCoords,
 						new Dimension(this.TILE_SIZE * 3 / 4, this.TILE_SIZE));
 
 				card.setRank(rank);
 				card.setSuit(suit);
 
 				// retrieves images for card according to suit and rank
-				card.images.add(this.imageHandler.getImage(filename));
 				card.images.add(this.imageHandler.getImage("card_back.png"));
+				card.images.add(this.imageHandler.getImage(filename));
 
 				this.cards.add(card);
 			}
@@ -83,10 +117,15 @@ public class Deck {
 	}
 
 	/**
-	 * @return true if the deck is empty, false otherwise
+	 * Splits half of the cards in this deck into the other deck
+	 * 
+	 * @param deck
 	 */
-	public boolean isEmpty() {
-		return this.cards.isEmpty();
+	public void splitDeck(Deck deck) {
+		int deckSize = this.cards.size();
+		for (int i = 0; i < deckSize / 2; i++) {
+			deck.cards.add(this.cards.removeFirst());
+		}
 	}
 
 	/**
@@ -102,13 +141,6 @@ public class Deck {
 	}
 
 	/**
-	 * @return the size of the deck
-	 */
-	public int size() {
-		return this.cards.size();
-	}
-
-	/**
 	 * @return a deep copy of the deck
 	 */
 	public Deck copy() {
@@ -119,6 +151,13 @@ public class Deck {
 
 		copy.cards = this.cards.copy();
 		return copy;
+	}
+
+	/**
+	 * Clears linked list of all cards
+	 */
+	public void clear() {
+		this.cards.clear();
 	}
 
 	@Override
