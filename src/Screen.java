@@ -1,6 +1,7 @@
 import javax.swing.JPanel;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -94,8 +95,6 @@ public class Screen extends JPanel implements Runnable {
                 // war
                 this.warTurns = 3;
             }
-
-            System.out.println(playerDeck.cards.size() + " " + computerDeck.cards.size());
         }
 
         this.cardsFlipped = !this.cardsFlipped;
@@ -116,7 +115,7 @@ public class Screen extends JPanel implements Runnable {
         if (deck == null) {
             throw new IllegalArgumentException();
         }
-
+        
         // displays at most the top three cards of the deck
         int cardsDisplayed = (deck.cards.size() > 3) ? 3 : deck.cards.size();
         for (int i = cardsDisplayed - 1; i >= 0; i--) {
@@ -137,6 +136,14 @@ public class Screen extends JPanel implements Runnable {
 
             sprite.draw(pos[0], pos[1], g2);
         }
+
+        // displays the number of cards in the deck
+        int[] pos = deck.getCoords();
+        pos[1] += TILE_SIZE * 11 / 8;
+
+        g2.setColor(new Color(50, 50, 50));
+        g2.setFont(new Font("sans-serif", Font.BOLD, TILE_SIZE / 8));
+        g2.drawString(deck.cards.size() + " cards", pos[0], pos[1]);
     }
 
     /**
@@ -150,7 +157,7 @@ public class Screen extends JPanel implements Runnable {
         // control over geometry, coordinate transformations, color, and layout
 
         // fills graphics with a single color
-        g2.setColor(Color.WHITE);
+        g2.setColor(new Color(220, 220, 220));
         g2.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
         // displays decks
