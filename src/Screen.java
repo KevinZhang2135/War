@@ -1,4 +1,5 @@
 import javax.swing.JPanel;
+import java.lang.Math;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -19,7 +20,9 @@ public class Screen extends JPanel implements Runnable {
     private KeyHandler keyHandler;
     private boolean spaceStrike;
     private boolean cardsFlipped;
+
     private int warTurns;
+    private double screenShakeOffset;
 
     private ImageHandler imageHandler;
 
@@ -37,6 +40,7 @@ public class Screen extends JPanel implements Runnable {
 
         // image and camera sprite group
         this.imageHandler = new ImageHandler("sprites");
+        this.warTurns = -1;
 
         // initializes decks
         int deckY = SCREEN_HEIGHT / 2 - TILE_SIZE / 2;
@@ -48,60 +52,10 @@ public class Screen extends JPanel implements Runnable {
         this.computerDeck = this.playerDeck.copy();
         this.computerDeck.setCoords(SCREEN_WIDTH * 3 / 4 - TILE_SIZE * 3 / 8, deckY);
 
-        // initializes decks and splits it between player and computer decks
+        // splits cards between player and computer decks
         this.playerDeck.fill();
         this.playerDeck.shuffle();
-        System.out.println(this.playerDeck.cards.size());
         this.playerDeck.splitDeck(this.computerDeck);
-
-    }
-
-    /**
-     * Handles strikes on a space bar
-     * Locks the space bar on press to prevent holding
-     */
-    public void handleSpaceStrike() {
-        // locks space bar after press
-        if (this.keyHandler.spacePressed && !this.spaceStrike) {
-            this.spaceStrike = true;
-            fightBattle();
-        }
-
-        // unlocks space bar after release
-        if (!this.keyHandler.spacePressed && this.spaceStrike) {
-            this.spaceStrike = false;
-        }
-    }
-
-    public void fightBattle() {
-        if (!this.cardsFlipped || this.warTurns > 0) {
-            this.playerDeck.draw();
-            this.computerDeck.draw();
-
-        } else {
-            Card playerCard = this.playerDeck.getTopDiscard();
-            Card computerCard = this.computerDeck.getTopDiscard();
-            // compares the weights of both wars
-            int diff = playerCard.compareRank(computerCard);
-            if (diff > 0) {
-                // player's card is heavier
-                this.playerDeck.winCards(this.computerDeck.discardPile);
-
-            } else if (diff < 0) {
-                // computer's card is heavier
-                this.computerDeck.winCards(this.playerDeck.discardPile);
-
-            } else {
-                // war
-                this.warTurns = 3;
-            }
-        }
-
-        this.cardsFlipped = !this.cardsFlipped;
-        if (this.warTurns > 0) {
-            this.warTurns--;
-        }
-        
 
     }
 
@@ -115,13 +69,13 @@ public class Screen extends JPanel implements Runnable {
         if (deck == null) {
             throw new IllegalArgumentException();
         }
-        
+
         // displays at most the top three cards of the deck
         int cardsDisplayed = (deck.cards.size() > 3) ? 3 : deck.cards.size();
         for (int i = cardsDisplayed - 1; i >= 0; i--) {
             Sprite sprite = (Sprite) deck.cards.get(i).data;
             int[] pos = deck.getCoords();
-            pos[1] += i * (TILE_SIZE / 10);
+            pos[1] += i * (TILE_SIZE / 10) + this.screenShakeOffset;
 
             sprite.draw(pos[0], pos[1], g2);
         }
@@ -132,14 +86,14 @@ public class Screen extends JPanel implements Runnable {
             Sprite sprite = deck.discardPile.get(i).data;
             int[] pos = deck.getCoords();
             pos[0] += sprite.x + TILE_SIZE * (pos[0] > SCREEN_WIDTH / 2 ? -1 : 1);
-            pos[1] += sprite.y + i * (TILE_SIZE / 10);
+            pos[1] += sprite.y + i * (TILE_SIZE / 10) + this.screenShakeOffset;
 
             sprite.draw(pos[0], pos[1], g2);
         }
 
         // displays the number of cards in the deck
         int[] pos = deck.getCoords();
-        pos[1] += TILE_SIZE * 11 / 8;
+        pos[1] += TILE_SIZE * 11 / 8 + this.screenShakeOffset;
 
         g2.setColor(new Color(50, 50, 50));
         g2.setFont(new Font("sans-serif", Font.BOLD, TILE_SIZE / 8));
@@ -167,12 +121,98 @@ public class Screen extends JPanel implements Runnable {
         g2.dispose(); // cleans up graphics content and releases any system resources it uses
     }
 
+    /**
+     * Handles strikes on a space bar
+     * Locks the space bar on press to prevent holding
+     */
+    public void handleSpaceStrike(boolean hold) {
+        if (hold) {
+            if (this.keyHandler.spacePressed) {
+                fightBattle();
+            }
+            return;
+        }
+
+        // locks space bar after press
+        if (this.keyHandler.spacePressed && !this.spaceStrike) {
+            this.spaceStrike = true;
+            fightBattle();
+        }
+
+        // unlocks space bar after release
+        if (!this.keyHandler.spacePressed && this.spaceStrike) {
+            this.spaceStrike = false;
+        }
+    }
+
+    public void fightBattle() {
+        if (!this.cardsFlipped || this.warTurns > -1) {
+            this.playerDeck.draw();
+            this.computerDeck.draw();
+
+        } else {
+            Card playerCard = this.playerDeck.getTopDiscard();
+            Card computerCard = this.computerDeck.getTopDiscard();
+            // compares the weights of both wars
+            int diff = playerCard.compareRank(computerCard);
+            if (diff > 0) {
+                // player's card is heavier
+                this.playerDeck.winCards(this.computerDeck.discardPile);
+
+            } else if (diff < 0) {
+                // computer's card is heavier
+                this.computerDeck.winCards(this.playerDeck.discardPile);
+
+            } else {
+                // war
+                this.warTurns = 3;
+
+            }
+        }
+
+        // does not decrement war turns or shake screen until war is declared
+        this.cardsFlipped = !this.cardsFlipped;
+        if (!(this.warTurns > -1)) {
+            return;
+        }
+
+        switch (this.warTurns) {
+            case 0:
+                this.screenShakeOffset = TILE_SIZE / 5;
+                break;
+
+            case 3:
+                break;
+
+            default:
+                this.screenShakeOffset = 5;
+        }
+
+        this.warTurns--;
+    }
+
+    /**
+     * Incrementaly reduces screen shake
+     */
+    public void dampenScreenShake() {
+        if (Math.abs(this.screenShakeOffset) > 0) {
+            this.screenShakeOffset *= -0.9;
+
+            // sets minute screen shake to 0
+            if (Math.abs(this.screenShakeOffset) < 0.5) {
+                this.screenShakeOffset = 0;
+            }
+
+        }
+    }
+
     public void update() {
         if (this.playerDeck.cards.isEmpty() || this.computerDeck.cards.isEmpty()) {
             return;
         }
 
-        this.handleSpaceStrike();
+        this.handleSpaceStrike(false);
+        this.dampenScreenShake();
     }
 
     public void startGameThread() {
