@@ -13,18 +13,18 @@ public class Screen extends JPanel implements Runnable {
     private final int SCREEN_HEIGHT = 600;
     private final int TILE_SIZE = 200;
     private final int FPS = 60;
+    private final long SPACEKEYCOOLDOWN = FPS * 2000000;
 
     // game assets, system resources, and input
     private Thread gameThread;
-
     private KeyHandler keyHandler;
-    private boolean spaceStrike;
-    private boolean cardsFlipped;
+    private ImageHandler imageHandler;
 
+    // game counters and mechanics
+    private boolean cardsFlipped;
+    private long spaceKeyTime;
     private int warTurns;
     private double screenShakeOffset;
-
-    private ImageHandler imageHandler;
 
     // decks and sprites
     private Deck playerDeck, computerDeck;
@@ -125,23 +125,13 @@ public class Screen extends JPanel implements Runnable {
      * Handles strikes on a space bar
      * Locks the space bar on press to prevent holding
      */
-    public void handleSpaceStrike(boolean hold) {
-        if (hold) {
-            if (this.keyHandler.spacePressed) {
-                fightBattle();
-            }
-            return;
-        }
+    public void handleSpaceStrike() {
+        if (System.nanoTime() - this.spaceKeyTime > SPACEKEYCOOLDOWN
+                && this.keyHandler.spacePressed) {
 
-        // locks space bar after press
-        if (this.keyHandler.spacePressed && !this.spaceStrike) {
-            this.spaceStrike = true;
+            this.spaceKeyTime = System.nanoTime();
             fightBattle();
-        }
 
-        // unlocks space bar after release
-        if (!this.keyHandler.spacePressed && this.spaceStrike) {
-            this.spaceStrike = false;
         }
     }
 
@@ -211,7 +201,7 @@ public class Screen extends JPanel implements Runnable {
             return;
         }
 
-        this.handleSpaceStrike(false);
+        this.handleSpaceStrike();
         this.dampenScreenShake();
     }
 
