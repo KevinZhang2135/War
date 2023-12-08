@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 
 public class Screen extends JPanel implements Runnable {
     // constants
@@ -45,7 +46,7 @@ public class Screen extends JPanel implements Runnable {
         // initializes decks
         int deckY = SCREEN_HEIGHT / 2 - TILE_SIZE / 2;
         this.playerDeck = new Deck(
-                new int[] { SCREEN_WIDTH / 4 - TILE_SIZE * 3 / 8, deckY },
+                new Point(SCREEN_WIDTH / 4 - TILE_SIZE * 3 / 8, deckY ),
                 TILE_SIZE,
                 this.imageHandler);
 
@@ -71,10 +72,12 @@ public class Screen extends JPanel implements Runnable {
         }
 
         // displays at most the top three cards of the deck
+        Point deckCoords = deck.getCoords();
         int cardsDisplayed = (deck.cards.size() > 3) ? 3 : deck.cards.size();
+
         for (int i = cardsDisplayed - 1; i >= 0; i--) {
             Sprite sprite = (Sprite) deck.cards.get(i);
-            int[] pos = deck.getCoords();
+            double[] pos = {deckCoords.getX(), deckCoords.getY()};
             pos[1] += i * (TILE_SIZE / 10) + this.screenShakeOffset;
 
             sprite.draw(pos[0], pos[1], g2);
@@ -82,22 +85,23 @@ public class Screen extends JPanel implements Runnable {
 
         // displays at most the top three cards of the discard pile
         cardsDisplayed = (deck.discardPile.size() > 3) ? 3 : deck.discardPile.size();
+
         for (int i = cardsDisplayed - 1; i >= 0; i--) {
             Sprite sprite = deck.discardPile.get(i);
-            int[] pos = deck.getCoords();
-            pos[0] += sprite.x + TILE_SIZE * (pos[0] > SCREEN_WIDTH / 2 ? -1 : 1);
-            pos[1] += sprite.y + i * (TILE_SIZE / 10) + this.screenShakeOffset;
+            double[] pos = {deckCoords.getX(), deckCoords.getY()};
+            pos[0] += sprite.coords.getX() + TILE_SIZE * (pos[0] > SCREEN_WIDTH / 2 ? -1 : 1);
+            pos[1] += sprite.coords.getY() + i * (TILE_SIZE / 10) + this.screenShakeOffset;
 
             sprite.draw(pos[0], pos[1], g2);
         }
 
         // displays the number of cards in the deck
-        int[] pos = deck.getCoords();
+        double[] pos = {deckCoords.getX(), deckCoords.getY()};
         pos[1] += TILE_SIZE * 11 / 8 + this.screenShakeOffset;
 
         g2.setColor(new Color(50, 50, 50));
         g2.setFont(new Font("sans-serif", Font.BOLD, TILE_SIZE / 8));
-        g2.drawString(deck.cards.size() + " cards", pos[0], pos[1]);
+        g2.drawString(deck.cards.size() + " cards", (int) pos[0], (int) pos[1]);
     }
 
     /**

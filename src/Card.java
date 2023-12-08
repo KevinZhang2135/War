@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.Point;
 
 public class Card extends Sprite {
     private int rank;
@@ -25,7 +26,7 @@ public class Card extends Sprite {
      * Constructor rank can be 2, 3, ..., 10, JACK, QUEEN, KING, ACE suit can be
      * CLUBS, DIAMONDS, HEARTS, SPADES
      */
-    public Card(int[] coords, Dimension size) {
+    public Card(Point coords, Dimension size) {
         super(coords, size);
 
     }

@@ -1,10 +1,11 @@
 import java.util.ArrayList;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 public class Sprite {
-    protected int x, y;
+    protected Point coords;
     public Dimension size;
 
     protected int frame;
@@ -12,9 +13,8 @@ public class Sprite {
 
     protected ArrayList<BufferedImage> images;
 
-    public Sprite(int[] coords, Dimension size) {
-        this.x = coords[0];
-        this.y = coords[1];
+    public Sprite(Point coords, Dimension size) {
+        this.coords = coords;
 
         this.size = size;
         this.frame = 0;
@@ -24,16 +24,19 @@ public class Sprite {
     }
 
     public void setCoords(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.coords.move(x, y);
     }
 
-    public void draw(int x, int y, Graphics2D g2) {
+    public void setCoords(double x, double y) {
+        this.coords.move((int) x, (int) y);
+    }
+
+    public void draw(double x, double y, Graphics2D g2) {
         BufferedImage image = this.images.get(this.frame);
         g2.drawImage(
                 image,
-                x,
-                y,
+                (int) x,
+                (int) y,
                 (int) (this.size.getWidth()),
                 (int) (this.size.getHeight()),
                 null);

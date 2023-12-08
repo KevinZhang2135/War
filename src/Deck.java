@@ -1,22 +1,22 @@
 import java.lang.Math;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.util.LinkedList;
 
 public class Deck {
 	public LinkedList<Card> cards;
 	public LinkedList<Card> discardPile;
 
-	private int x, y;
+	private Point coords;
 	private final int TILE_SIZE;
 
 	private ImageHandler imageHandler;
 
-	public Deck(int[] coords, int tileSize, ImageHandler imageHandler) {
+	public Deck(Point coords, int tileSize, ImageHandler imageHandler) {
 		this.cards = new LinkedList<>();
 		this.discardPile = new LinkedList<>();
 
-		this.x = coords[0];
-		this.y = coords[1];
+		this.coords = coords;
 		this.TILE_SIZE = tileSize;
 
 		this.imageHandler = imageHandler;
@@ -27,8 +27,8 @@ public class Deck {
 	 * 
 	 * @return a coordinate pair as (x, y)
 	 */
-	public int[] getCoords() {
-		return new int[] { this.x, this.y };
+	public Point getCoords() {
+		return this.coords;
 	}
 
 	/**
@@ -37,13 +37,13 @@ public class Deck {
 	 * @param x the new x coordinate of the deck
 	 * @param y the new y coordinate of the deck
 	 */
-	public void setCoords(int x, int y) {
-		this.x = x;
-		this.y = y;
+	public void setCoords(double x, double y) {
+		this.coords.setLocation(x, y);
 	}
 
 	/**
 	 * Retrieves the first card from the discard pile
+	 * 
 	 * @return the first card of the discard pile
 	 */
 	public Card getTopDiscard() {
@@ -96,10 +96,9 @@ public class Deck {
 				String filename = String.format("%s_%s.png", Card.SUITS[suit], Card.RANKS[rank]);
 
 				// randomizes card coordinates in both x and y directions by -10 to 10 pixels
-				int[] cardCoords = {
+				Point cardCoords = new Point(
 						(int) (Math.random() * (20 + 1)) - 10,
-						(int) (Math.random() * (20 + 1)) - 10
-				};
+						(int) (Math.random() * (20 + 1)) - 10);
 
 				Card card = new Card(
 						cardCoords,
@@ -146,7 +145,7 @@ public class Deck {
 	 */
 	public Deck copy() {
 		Deck copy = new Deck(
-				new int[] { this.x, this.y },
+				new Point(this.coords),
 				TILE_SIZE,
 				imageHandler);
 
