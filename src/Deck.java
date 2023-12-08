@@ -1,5 +1,6 @@
 import java.lang.Math;
 import java.awt.Dimension;
+import java.util.LinkedList;
 
 public class Deck {
 	public LinkedList<Card> cards;
@@ -46,7 +47,7 @@ public class Deck {
 	 * @return the first card of the discard pile
 	 */
 	public Card getTopDiscard() {
-		return this.discardPile.getFirst().data;
+		return this.discardPile.getFirst();
 	}
 
 	/**
@@ -149,15 +150,8 @@ public class Deck {
 				TILE_SIZE,
 				imageHandler);
 
-		copy.cards = this.cards.copy();
+		copy.cards = (LinkedList<Card>) this.cards.clone();
 		return copy;
-	}
-
-	/**
-	 * Clears linked list of all cards
-	 */
-	public void clear() {
-		this.cards.clear();
 	}
 
 	@Override

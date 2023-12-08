@@ -73,7 +73,7 @@ public class Screen extends JPanel implements Runnable {
         // displays at most the top three cards of the deck
         int cardsDisplayed = (deck.cards.size() > 3) ? 3 : deck.cards.size();
         for (int i = cardsDisplayed - 1; i >= 0; i--) {
-            Sprite sprite = (Sprite) deck.cards.get(i).data;
+            Sprite sprite = (Sprite) deck.cards.get(i);
             int[] pos = deck.getCoords();
             pos[1] += i * (TILE_SIZE / 10) + this.screenShakeOffset;
 
@@ -83,7 +83,7 @@ public class Screen extends JPanel implements Runnable {
         // displays at most the top three cards of the discard pile
         cardsDisplayed = (deck.discardPile.size() > 3) ? 3 : deck.discardPile.size();
         for (int i = cardsDisplayed - 1; i >= 0; i--) {
-            Sprite sprite = deck.discardPile.get(i).data;
+            Sprite sprite = deck.discardPile.get(i);
             int[] pos = deck.getCoords();
             pos[0] += sprite.x + TILE_SIZE * (pos[0] > SCREEN_WIDTH / 2 ? -1 : 1);
             pos[1] += sprite.y + i * (TILE_SIZE / 10) + this.screenShakeOffset;
@@ -166,16 +166,11 @@ public class Screen extends JPanel implements Runnable {
             return;
         }
 
-        switch (this.warTurns) {
-            case 0:
-                this.screenShakeOffset = TILE_SIZE / 5;
-                break;
+        if (this.warTurns == 0) {
+            this.screenShakeOffset = TILE_SIZE / 5;
 
-            case 3:
-                break;
-
-            default:
-                this.screenShakeOffset = 5;
+        } else {
+            this.screenShakeOffset = 5;
         }
 
         this.warTurns--;
